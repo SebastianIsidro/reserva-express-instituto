@@ -1,0 +1,23 @@
+<div class="container">
+  <div class="login">
+    <h2>Reserva <span class="brand-name express">Express</span></h2>
+    <form [formGroup]="formLogin">
+      <div class="mb-3">
+        <label for="email" class="form-label">Correo electrónico</label>
+        <input id="email" type="email" class="form-control" formControlName="email" placeholder="Ingresa tu correo" />
+        <div *ngIf="formLogin.get('email')?.invalid && formLogin.get('email')?.touched" class="text-danger">
+          Formato incorrecto
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Contraseña</label>
+        <input id="password" type="password" class="form-control" formControlName="password"
+          placeholder="Ingresa tu contraseña" />
+          <div *ngIf="formLogin.get('password')?.invalid && formLogin.get('password')?.touched" class="text-danger">
+            De 4 a 16 caracteres
+          </div>
+      </div>
+      <button type="submit" class="btn btn-danger mb-3 w-100" (click)="login()">Ingresar</button>
+    </form>
+  </div>
+</div>

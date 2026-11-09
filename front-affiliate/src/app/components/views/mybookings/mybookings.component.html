@@ -1,0 +1,74 @@
+<app-mainheader></app-mainheader>
+<div class="container mt-4">
+    <div class="banner-overlay">
+        <div class="banner-text">
+          <h2>Mis Reservas <span class="brand-name">pendientes</span></h2>
+          <p>Aquí puedes aceptar o rechazar todas tus reservas por restaurante</p>
+        </div>
+      </div>
+    
+      <div class="bar">
+        <span class="route-divider"><a class="home-route">Inicio</a> / <a class="bookings-route">Mis Reservas</a></span>
+      </div>
+
+<div class="bookings-list">              
+    <div class="row" *ngFor="let list of bookingsList">
+      <div class="col-12 mb-3">
+        <div class="card">
+          <div class="row g-0 align-items-center">
+            <div class="col-md-4">
+              <img
+                [src]="'https://marketing4ecommerce.co/wp-content/uploads/2018/06/Ahora-puedes-hacer-reservaciones-en-restaurantes-desde-Google-Maps-Colombia-compressor.jpg'"
+                class="img-fluid rounded-start" />
+            </div>
+            <div class="col-md-6">
+              <div class="card-body">
+                <h5 class="card-title">N ° de Reserva - {{list.booking_id}}</h5>
+                <p class="card-text">
+                  <strong>Restaurante:</strong> {{list.objRestaurant.name}} <br />
+                  <strong>N° de Comensales:</strong> {{list.pax}} personas <br />
+                  <strong>Fecha:</strong> {{list.booking_date | date: 'dd/MM/yyyy'}} |
+                  <strong>Hora:</strong> {{list.booking_time.substring(0, 5)}} <br />
+                  <strong>Estado:</strong> {{list.objBookingStatus.description}} <br />
+                  <strong>Enviado por:</strong> {{list.objUser.name}} {{list.objUser.lastname}}<br />
+                  <strong>Correo personal:</strong> {{list.objUser.email}}<br />
+                </p>
+              </div>
+            </div>
+            <div class="col-md-2 text-center">
+              <button class="btn btn-orange w-100" 
+                (click)="accept(list.booking_id)">
+                Aceptar Reserva
+              </button>
+              <p></p>
+              <button class="btn btn-danger w-100" 
+                (click)="decline(list.booking_id)">
+              Cancelar Reserva
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+  
+<div class="modal fade" id="modalMyBookings" tabindex="-1" aria-labelledby="modalMyBookings" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalMyBookingsLabel">Confirmar Acción</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>¿Estás seguro de realizar esta acción?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="confirmAction()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<app-mainfooter></app-mainfooter>

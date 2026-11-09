@@ -1,0 +1,72 @@
+<app-mainheader></app-mainheader>
+<div class="container mt-4">
+    <div class="banner-overlay">
+      <div class="banner-text">
+        <h2>¡Afiliaciones pendientes de <span class="brand-name">Reserva</span> Express!</h2>
+        <p>Revisa y aprueba a nuestros próximos socios</p>
+      </div>
+    </div>
+  
+    <div class="restaurants-list">
+      <div class="row" *ngFor="let list of affiliationRequestsList">
+        <div class="col-12 mb-3">
+          <div class="card">
+            <div class="row g-0 align-items-center">
+
+              <div class="col-md-4">
+                <img [src]="list.image_url" class="img-fluid rounded-start" alt="{{list.name}}" />
+              </div>
+
+              <div class="col-md-6">
+                <div class="card-body">
+                  <h5 class="card-title">{{list.name}}</h5>
+                  <p class="card-text">
+                    <strong>Descripción:</strong> {{list.description}} <br />
+                    <strong>Dirección:</strong> {{list.address}} <br />
+                    <strong>Horario:</strong> {{list.opening_hours.substring(0, 5)}} - {{list.closing_hours.substring(0,5)}} |
+                    <strong>Límite por Reserva:</strong> {{list.pax_limit}} personas
+                    <strong>Tipo:</strong> {{list.objRestaurantType.description}} <br />
+                    <strong>Fecha de solicitud</strong> {{list.request_date | date: 'dd/MM/yyyy'}}
+                    <br>
+                    <strong>Enviado por</strong> {{list.objUser.name}} {{list.objUser.lastname}}
+                  </p>
+                </div>
+              </div>
+            <div class="col-md-2 text-center" >
+                <button class="btn btn-success w-100"
+                    (click)="approve(list.request_id)">
+                    Aprobar
+                </button>
+                <div class="scrob"></div>
+                <button class="btn btn-danger w-100"
+                    (click)="decline(list.request_id)">
+                    Rechazar
+                </button>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- Modal para confirmar acciones -->
+<div class="modal fade" id="modalAffiliation" tabindex="-1" aria-labelledby="modalAffiliationLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalAffiliationLabel">Confirmar Acción</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>¿Estás seguro de realizar esta acción?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="confirmAction()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-mainfooter></app-mainfooter>

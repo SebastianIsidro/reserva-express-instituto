@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+* {
+    font-family: 'Roboto', sans-serif;
+}
+
+#footer {
+    background-color: #1e160d;
+    color: #ffffff;
+    z-index: 10;
+}
+
+.footer .footer-text {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #ffffff;
+}
+
+.brand-name {
+    font-family: 'Satisfy', cursive;
+    font-size: 1.2rem;
+}
+
+.brand-name.express {
+    color: #ffffff;
+}
+
+.brand-name:not(.express) {
+    color: #f44336;
+}

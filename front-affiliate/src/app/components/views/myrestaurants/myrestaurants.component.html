@@ -1,0 +1,342 @@
+<app-mainheader></app-mainheader>
+
+<div class="container mt-4">
+  <div class="banner-overlay">
+    <div class="banner-text">
+      <h2>¡Actualiza tus <span class="brand-name">restaurantes</span> Express!</h2>
+      <p>Revisa y envia actualizaciones de tus restaurantes</p>
+    </div>
+  </div>
+
+  <div class="restaurants-list">
+    <div class="col-9 btn-agregar" id="agregarRes">
+      <p>Si necesitas afiliar más restaurantes envia más solicitudes</p>
+      <div class="separetor"></div>
+      <button id="buttonAdd" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNewRestaurant"
+          (click)="titleNew('Crear', null)">
+          Agregar más restaurantes
+      </button>
+    </div>
+    <br>
+    <div class="row" *ngFor="let list of restaurantById">
+      <div class="col-12 mb-3">
+        <div class="card">
+          <div class="row g-0 align-items-center">
+            <div class="col-md-4">
+              <img [src]="list.image_url" class="img-fluid rounded-start" alt="{{list.name}}" />
+            </div>
+            <div class="col-md-6">
+              <div class="card-body">
+                <h5 class="card-title">{{list.name}}</h5>
+                <p class="card-text">
+                  <strong>Descripción:</strong> {{list.description}} <br />
+                  <strong>Dirección:</strong> {{list.address}} <br />
+                  <strong>Horario:</strong> {{list.opening_hours.substring(0, 5)}} - {{list.closing_hours.substring(0,
+                  5)}} |
+                  <strong>Tipo:</strong> {{list.objRestaurantType.description}} <br />
+                  <strong>Límite por Reserva:</strong> {{list.pax_limit}} personas
+                </p>
+              </div>
+            </div>
+            <div class="col-md-2 text-center">
+              <button class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#modalResRequestUpdate"
+                (click)="titleModal(list.restaurant_id)">
+                Actualizar información
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <form [formGroup]="formRestaurantRequest" (ngSubmit)="sendUpdateAlert()">
+    <div class="modal fade" id="modalResRequestUpdate" tabindex="-1" aria-labelledby="modalResRequestUpdateLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{{ title }}</h5>
+            <button type="button" class="btn-close" (click)="closeButton()"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-6">
+                <div class="form-floating mb-3">
+                  <select class="form-select" formControlName="restaurant_id" required disabled>
+                    <option value="" disabled selected>Seleccione el restaurante</option>
+                    <option *ngFor="let list of restaurantById" [value]="list.restaurant_id">
+                      {{ list.restaurant_id }}
+                    </option>
+                  </select>
+                  <label for="restaurant_id">Id Restaurante</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" formControlName="name"
+                    placeholder="Ingresa el nombre del restaurante">
+                  <label for="name" class="form-label">Nombre del Restaurante</label>
+                  <div *ngIf="formRestaurantRequest.get('name')?.invalid && formRestaurantRequest.get('name')?.touched"
+                    class="text-danger">
+                    El nombre es requerido
+                  </div>
+                </div>
+
+                <div class="form-floating mb-3">
+                  <select class="form-select" formControlName="restauranttype_id" required >
+                    <option value=""  selected>Seleccione el estado</option>
+                    <option *ngFor="let list of restaurantType" [value]="list.restauranttype_id">
+                      {{ list.description }}
+                    </option>
+                  </select>
+                  <label for="restauranttype_id">Selecciona el Tipo de Restaurante</label>
+                </div>
+
+
+              </div>
+
+              <div class="col-6">
+
+                <div class="form-floating mb-3">
+                    
+                  <input type="number" class="form-control" formControlName="pax_limit" placeholder="Ejemplo: 50">
+                  <label for="pax_limit" class="form-label">Capacidad Máxima</label>
+                  <div
+                    *ngIf="formRestaurantRequest.get('pax_limit')?.invalid && formRestaurantRequest.get('pax_limit')?.touched"
+                    class="text-danger">
+                    La capacidad máxima es requerida
+                  </div>
+                </div>
+              
+
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" formControlName="address" placeholder="Ingresa la dirección">
+                <label for="address" class="form-label">Dirección</label>
+                <div
+                  *ngIf="formRestaurantRequest.get('address')?.invalid && formRestaurantRequest.get('address')?.touched"
+                  class="text-danger">
+                  La dirección es requerida
+                </div>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" formControlName="ruc"
+                  placeholder="Ingresa el RUC de tu resturante">
+                <label for="ruc" class="form-label">RUC</label>
+                <div *ngIf="formRestaurantRequest.get('ruc')?.invalid && formRestaurantRequest.get('ruc')?.touched"
+                  class="text-danger">
+                  Proporciona un RUC válido
+                </div>
+            </div>
+              </div>
+                
+              <div class="col-12">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" placeholder="description" formControlName="description" />
+                <label for="description">Descripción</label>
+                <div *ngIf="formRestaurantRequest.get('description')?.invalid && formRestaurantRequest.get('description')?.touched" class="text-danger">
+                  Proporciona una descripción de tu restaurante
+                </div>
+              </div>
+            </div>
+
+              <div class="col-6">
+
+                <div class="form-floating mb-3">
+                  <input type="time" class="form-control" placeholder="Hora de apertura" formControlName="opening_hours">
+                  <label for="opening_hours" class="form-label">Hora de Apertura</label>
+                  <div
+                    *ngIf="formRestaurantRequest.get('opening_hours')?.invalid && formRestaurantRequest.get('opening_hours')?.touched"
+                    class="text-danger">
+                    La hora de apertura es requerida
+                  </div>
+                </div>
+                
+                <div class="form-floating mb-3">
+                  <input type="time" class="form-control" placeholder="Hora de cierre" formControlName="closing_hours">
+                  <label for="closing_hours" class="form-label">Hora de Cierre</label>
+                  <div
+                    *ngIf="formRestaurantRequest.get('closing_hours')?.invalid && formRestaurantRequest.get('closing_hours')?.touched"
+                    class="text-danger">
+                    La hora de cierre es requerida
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="col-6">
+                  <div class="form-floating mb-3">
+                    
+                    <input type="url" class="form-control" formControlName="image_url"
+                      placeholder="Ingresa la URL de una imagen">
+                    <label for="image_url" class="form-label">Imagen URL</label>
+                    <div
+                      *ngIf="formRestaurantRequest.get('image_url')?.invalid && formRestaurantRequest.get('image_url')?.touched"
+                      class="text-danger">
+                      Proporciona un enlace válido
+                    </div>
+                  </div>
+
+                  <div class="form-floating mb-3">
+                    <select class="form-select" formControlName="userid" required disabled>
+                      <option value=""  selected>Seleccione el usuario</option>
+                      <option *ngFor="let user of usersList" [value]="user.userid">
+                        {{ user.lastname }}, {{ user.name }}
+                      </option>
+                    </select>
+                    <label for="userid">Usuario</label>
+                  </div>   
+                </div>
+              </div>
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeButton()">Cerrar</button>
+            <button type="submit" class="btn btn-danger">Enviar</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- Modal para crear -->
+  <form [formGroup]="formNewRestaurantRequest" (ngSubmit)="createNewRestaurantRequest()">
+    <div class="modal fade" id="modalNewRestaurant" tabindex="-1" aria-labelledby="modalNewRestaurantLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{{ title }}</h5>
+            <button type="button" class="btn-close" (click)="closeButton()"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-6">
+
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" formControlName="name"
+                    placeholder="Ingresa el nombre del restaurante">
+                  <label for="name" class="form-label">Nombre del Restaurante</label>
+                  <div *ngIf="formNewRestaurantRequest.get('name')?.invalid && formNewRestaurantRequest.get('name')?.touched"
+                    class="text-danger">
+                    El nombre es requerido
+                  </div>
+                </div>
+
+                <div class="form-floating mb-3">
+                  <select class="form-select" formControlName="restauranttype_id" required >
+                    <option value=""  selected>Seleccione el estado</option>
+                    <option *ngFor="let list of restaurantType" [value]="list.restauranttype_id">
+                      {{ list.description }}
+                    </option>
+                  </select>
+                  <label for="restauranttype_id">Selecciona el Tipo de Restaurante</label>
+                </div>
+
+
+              </div>
+
+              <div class="col-6">
+
+                <div class="form-floating mb-3">
+                    
+                  <input type="number" class="form-control" formControlName="pax_limit" placeholder="Ejemplo: 50">
+                  <label for="pax_limit" class="form-label">Capacidad Máxima</label>
+                  <div
+                    *ngIf="formNewRestaurantRequest.get('pax_limit')?.invalid && formNewRestaurantRequest.get('pax_limit')?.touched"
+                    class="text-danger">
+                    La capacidad máxima es requerida
+                  </div>
+                </div>
+              
+
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" formControlName="address" placeholder="Ingresa la dirección">
+                <label for="address" class="form-label">Dirección</label>
+                <div *ngIf="formNewRestaurantRequest.get('address')?.invalid && formNewRestaurantRequest.get('address')?.touched"
+                  class="text-danger">
+                  La dirección es requerida
+                </div>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" formControlName="ruc"
+                  placeholder="Ingresa el RUC de tu resturante">
+                <label for="ruc" class="form-label">RUC</label>
+                <div *ngIf="formNewRestaurantRequest.get('ruc')?.invalid && formNewRestaurantRequest.get('ruc')?.touched"
+                  class="text-danger">
+                  Proporciona un RUC válido
+                </div>
+            </div>
+              </div>
+                
+              <div class="col-12">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" placeholder="description" formControlName="description" />
+                <label for="description">Descripción</label>
+                <div *ngIf="formNewRestaurantRequest.get('description')?.invalid && formNewRestaurantRequest.get('description')?.touched" class="text-danger">
+                  Proporciona una descripción de tu restaurante
+                </div>
+              </div>
+            </div>
+
+              <div class="col-6">
+
+                <div class="form-floating mb-3">
+                  <input type="time" class="form-control" placeholder="Hora de apertura" formControlName="opening_hours">
+                  <label for="opening_hours" class="form-label">Hora de Apertura</label>
+                  <div
+                    *ngIf="formNewRestaurantRequest.get('opening_hours')?.invalid && formNewRestaurantRequest.get('opening_hours')?.touched"
+                    class="text-danger">
+                    La hora de apertura es requerida
+                  </div>
+                </div>
+                
+                <div class="form-floating mb-3">
+                  <input type="time" class="form-control" placeholder="Hora de cierre" formControlName="closing_hours">
+                  <label for="closing_hours" class="form-label">Hora de Cierre</label>
+                  <div
+                    *ngIf="formNewRestaurantRequest.get('closing_hours')?.invalid && formNewRestaurantRequest.get('closing_hours')?.touched"
+                    class="text-danger">
+                    La hora de cierre es requerida
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="col-6">
+                  <div class="form-floating mb-3">
+                    
+                    <input type="url" class="form-control" formControlName="image_url"
+                      placeholder="Ingresa la URL de una imagen">
+                    <label for="image_url" class="form-label">Imagen URL</label>
+                    <div
+                      *ngIf="formNewRestaurantRequest.get('image_url')?.invalid && formNewRestaurantRequest.get('image_url')?.touched"
+                      class="text-danger">
+                      Proporciona un enlace válido
+                    </div>
+                  </div>
+
+                  <div class="form-floating mb-3">
+                    <select class="form-select" formControlName="userid" required disabled>
+                      <option value=""  selected>Seleccione el usuario</option>
+                      <option *ngFor="let user of usersList" [value]="user.userid">
+                        {{ user.lastname }}, {{ user.name }}
+                      </option>
+                    </select>
+                    <label for="userid">Usuario</label>
+                  </div>   
+                </div>
+              </div>
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeButtonNew()">Cerrar</button>
+            <button type="submit" class="btn btn-danger">Enviar</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<app-mainfooter></app-mainfooter>

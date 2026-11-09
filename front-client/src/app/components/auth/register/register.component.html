@@ -1,0 +1,91 @@
+<div class="container">
+  <div class="register">
+    <h2><span class="brand-name express">Reserva Express</span></h2>
+    <form [formGroup]="formRegister" (ngSubmit)="register()">
+      
+      <div class="row">
+        <div class="col-6">
+          <div class="mb-3">
+            <label for="name" class="form-label">Nombre</label>
+            <input type="text" class="form-control" formControlName="name" placeholder="Ingresa tu nombre">
+            <div *ngIf="formRegister.get('name')?.invalid && formRegister.get('name')?.touched" class="text-danger">
+              Ej. Juan
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="mb-3">
+            <label for="lastname" class="form-label">Apellidos</label>
+            <input type="text" class="form-control" formControlName="lastname" placeholder="Ingresa tus apellidos">
+            <div *ngIf="formRegister.get('lastname')?.invalid && formRegister.get('lastname')?.touched" class="text-danger">
+              Ej. Torres Ruíz
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-4">
+          <div class="mb-3">
+            <label for="phone" class="form-label">N° Teléfono (+51)</label>
+            <input type="text" class="form-control" formControlName="phone" placeholder="Ingresa tu teléfono">
+            <div *ngIf="formRegister.get('phone')?.invalid && formRegister.get('phone')?.touched" class="text-danger">
+              Ej. 999888777
+            </div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="mb-3">
+            <label for="gender" class="form-label">Sexo</label>
+            <select class="form-control" formControlName="gender">
+              <option value="" disabled selected>Seleccionar...</option>
+              <option value="M">Masculino</option>
+              <option value="F">Femenino</option>
+              <option value="O">Otro</option>
+            </select>
+            <div *ngIf="formRegister.get('gender')?.invalid && formRegister.get('gender')?.touched" class="text-danger">
+              Eliga una opción
+            </div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="mb-3">
+            <label for="birthdate" class="form-label">Fecha de Nacimiento</label>
+            <input type="date" class="form-control" formControlName="birthdate">
+            <div *ngIf="formRegister.get('birthdate')?.invalid && formRegister.get('birthdate')?.touched" class="text-danger">
+              Es menor de edad
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <div class="mb-3">
+            <label for="email" class="form-label">Correo Electrónico</label>
+            <input type="email" class="form-control" formControlName="email" placeholder="Ingresa tu correo">
+            <div *ngIf="formRegister.get('email')?.invalid && formRegister.get('email')?.touched" class="text-danger">
+              Formato incorrecto
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input type="password" class="form-control" formControlName="password" placeholder="Ingresa tu contraseña">
+            <div *ngIf="formRegister.get('password')?.invalid && formRegister.get('password')?.touched" class="text-danger">
+              De 4 a 16 caracteres
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <button type="submit" class="btn btn-danger w-100">Crear Cuenta</button>
+      </div>
+      <div class="text-center">
+        <span>¿Ya tienes una cuenta? <a routerLink="/login" class="link-text">Inicia Sesión</a></span>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,140 @@
+<app-mainheader></app-mainheader>
+
+<div class="container mt-4">
+  <div class="banner-overlay">
+    <div class="banner-text">
+      <h2>Mis Reservas</h2>
+      <p>Aquí puedes gestionar todas tus reservas de forma fácil y rápida. <br />
+        Encuentra detalles, actualiza información o cancela según tus necesidades.</p>
+    </div>
+  </div>
+
+  <div class="bar">
+    <span class="route-divider"><a class="home-route">Inicio</a> / <a class="bookings-route">Mis Reservas</a></span>
+  </div>
+
+  <div class="bookings-list">
+    <div class="row" *ngFor="let list of bookingsList">
+      <div class="col-12 mb-3">
+        <div class="card">
+          <div class="row g-0 align-items-center">
+            <div class="col-md-4">
+              <img
+                [src]="'https://marketing4ecommerce.co/wp-content/uploads/2018/06/Ahora-puedes-hacer-reservaciones-en-restaurantes-desde-Google-Maps-Colombia-compressor.jpg'"
+                class="img-fluid rounded-start" />
+            </div>
+            <div class="col-md-6">
+              <div class="card-body">
+                <h5 class="card-title">N ° de Reserva - {{list.booking_id}}</h5>
+                <p class="card-text">
+                  <strong>Restaurante:</strong> {{list.objRestaurant.name}} <br />
+                  <strong>N° de Comensales:</strong> {{list.pax}} personas <br />
+                  <strong>Fecha:</strong> {{list.booking_date | date: 'dd/MM/yyyy'}} |
+                  <strong>Hora:</strong> {{list.booking_time.substring(0, 5)}} <br />
+                  <strong>Estado:</strong> {{list.objBookingStatus.description}} <br />
+                </p>
+              </div>
+            </div>
+            <div class="col-md-2 text-center">
+              <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#modalBooking"
+                (click)="titleModal(list.booking_id)"
+                [disabled]="['Asistido', 'Aceptado', 'Rechazado', 'Cancelado'].includes(list.objBookingStatus.description)">
+                Editar
+              </button>
+              <p></p>
+              <button class="btn btn-secondary w-100" (click)="cancelBooking(list.booking_id)"
+                [disabled]="['Asistido', 'Aceptado', 'Rechazado', 'Cancelado'].includes(list.objBookingStatus.description)">
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <form [formGroup]="formBooking" (ngSubmit)="updateBookingAlert()">
+    <div class="modal fade" id="modalBooking">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{{title}}</h5>
+            <button type="button" class="btn-close" (click)="closeButton()"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+
+              <div class="col-6">
+                <div class="form-floating mb-3">
+                  <select class="form-select" formControlName="restaurant_id" required disabled>
+                    <option value="" disabled selected>Seleccione el restaurante</option>
+                    <option *ngFor="let list of bookingsList" [value]="list.restaurant_id">
+                      {{ list.objRestaurant.name }}
+                    </option>
+                  </select>
+                  <label for="restaurant_id">Restaurante</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                  <select class="form-select" formControlName="bookingstatusid" required disabled>
+                    <option value="" disabled selected>Seleccione el Estado</option>
+                    <option *ngFor="let list of bookingsList" [value]="list.bookingstatusid">
+                      {{ list.objBookingStatus.description}}
+                    </option>
+                  </select>
+                  <label for="bookingstatusid">Estado</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                  <input type="date" class="form-control" placeholder="Fecha" formControlName="booking_date" required>
+                  <label for="booking_date">Fecha de Reserva</label>
+                  <div *ngIf="formBooking.get('booking_date')?.invalid && formBooking.get('booking_date')?.touched"
+                    class="text-danger">
+                    Un día posterior a la actual
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6">
+                <div class="form-floating mb-3">
+                  <select class="form-select" formControlName="userid" required disabled>
+                    <option value="" disabled selected>Seleccione el Estado</option>
+                    <option *ngFor="let list of bookingsList" [value]="list.userid">
+                      {{ list.objUser.lastname}}, {{ list.objUser.name}}
+                    </option>
+                  </select>
+                  <label for="userid">Usuario</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                  <input type="number" class="form-control" placeholder="pax" formControlName="pax">
+                  <label for="pax">N° de Comensales</label>
+                  <div *ngIf="formBooking.get('pax')?.invalid && formBooking.get('pax')?.touched" class="text-danger">
+                    Cantidad inválida
+                  </div>
+                </div>
+
+                <div class="form-floating mb-3">
+                  <input type="time" class="form-control" placeholder="Hora" formControlName="booking_time">
+                  <label for="booking_time">Hora de Reserva</label>
+                  <div *ngIf="formBooking.get('booking_time')?.invalid && formBooking.get('booking_time')?.touched"
+                    class="text-danger">
+                    Tiempo fuera de servicio
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeButton()">Cerrar</button>
+            <button type="submit" class="btn btn-danger">Reservar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<app-mainfooter></app-mainfooter>

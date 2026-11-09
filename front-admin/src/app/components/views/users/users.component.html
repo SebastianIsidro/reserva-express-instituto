@@ -1,0 +1,215 @@
+<app-mainheader></app-mainheader>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<div class="container">
+
+    <div class="banner-overlay">
+        <div class="banner-text">
+            <h2>Mi Cuenta</h2>
+            <p>Este es tu espacio personal para gestionar tu información. <br>
+                Edita tus datos, mantén tu perfil actualizado y toma el control de tu información fácilmente.</p>
+        </div>
+    </div>
+
+    <div class="bar">
+        <span class="route-divider"><a class="home-route">Inicio</a> / <a class="profile-route">Perfil</a> / <a
+                class="profile-route">Mi Cuenta</a></span>
+    </div>
+
+    <div class="d-flex flex-wrap align-items-center justify-content-center">
+        <div class="text-center me-4">
+            <div class="profile-box">
+                <img [src]="getProfileImage(user.gender)" alt="Imagen de Perfil"
+                    class="img-fluid rounded-circle profile-image" />
+                <h5 class="mt-3">{{ user.name }}</h5>
+                <h5 class="mt-3">
+                    <span *ngIf="user?.objUserType?.description" class="badge">{{ user.objUserType.description }}</span>
+                </h5>
+            </div>
+        </div>
+
+        <div class="card shadow-sm p-4">
+            <h5 class="mb-3 profile-text">Datos Personales</h5>
+            <table class="table table-borderless">
+                <tbody>
+                    <tr>
+                        <th>Nombre Completo</th>
+                        <td>{{ user.lastname }}, {{ user.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>N° Teléfono</th>
+                        <td>{{ user.phone }}</td>
+                    </tr>
+                    <tr>
+                        <th>Sexo</th>
+                        <td>{{
+                            user.gender === 'M' ? 'Masculino' :
+                            user.gender === 'F' ? 'Femenino' :
+                            user.gender === 'O' ? 'Otros' : ''
+                            }}</td>
+                    </tr>
+                    <tr>
+                        <th>Fecha de Nacimiento</th>
+                        <td>{{ user.birthdate | date: 'dd/MM/yyyy' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h5 class="mb-3 profile-text">Información de la Cuenta</h5>
+            <table class="table table-borderless">
+                <tbody>
+                    <tr>
+                        <th>Correo Electrónico</th>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Fecha de Registro</th>
+                        <td>{{ user.creation_date | date: 'dd/MM/yyyy' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Botones de acción -->
+            <div class="d-flex justify-content-left gap-3 mt-4">
+                <button type="button" class="btn btn-danger edit-button" data-bs-toggle="modal" data-bs-target="#modalUser"
+                    (click)="titleModal(user.userid)">
+                    Editar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <form [formGroup]="formUser" (ngSubmit)="updateUserAlert()">
+        <div class="modal fade" id="modalUser" tabindex="-1" aria-labelledby="modalUserLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header text-white">
+                        <h5 class="modal-title" id="modalUserLabel">{{ title }}</h5>
+                        <button type="button" class="btn-close" (click)="closeButton()" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Campo oculto para tipo de cliente -->
+                        <input type="hidden" formControlName="clientType" [value]="'cliente'">
+    
+                        <!-- Sección de Datos Personales -->
+                        <h5 class="mb-3">Datos Personales</h5>
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" placeholder="Nombres" formControlName="name"
+                                        required>
+                                    <label for="name">Nombres</label>
+                                    <div *ngIf="formUser.get('name')?.invalid && formUser.get('name')?.touched"
+                                    class="text-danger">
+                                    El nombre es requerido
+                                    </div>
+                                </div>
+    
+                                <div class="form-floating mb-3">
+                                    <input type="number" class="form-control" placeholder="N° Teléfono"
+                                        formControlName="phone">
+                                    <label for="phone">N° Teléfono</label>
+                                    <div *ngIf="formUser.get('phone')?.invalid && formUser.get('phone')?.touched"
+                                    class="text-danger">
+                                    El N° de teléfono es requerido
+                                    </div>
+                                </div>
+    
+                                <div class="form-floating mb-3">
+                                    <input type="date" class="form-control" placeholder="Fecha de Nacimiento"
+                                        formControlName="birthdate">
+                                    <label for="birthdate">Fecha de Nacimiento</label>
+                                    <div *ngIf="formUser.get('birthdate')?.invalid && formUser.get('birthdate')?.touched"
+                                    class="text-danger">
+                                    La fecha de nacimiento es requerida
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="col-12 col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" placeholder="Apellidos"
+                                        formControlName="lastname">
+                                    <label for="lastname">Apellidos</label>
+                                    <div *ngIf="formUser.get('lastname')?.invalid && formUser.get('lastname')?.touched"
+                                    class="text-danger">
+                                    Es necesario escribir apellidos
+                                    </div>
+                                </div>
+    
+                                <div class="form-floating mb-3">
+                                    <select class="form-control" formControlName="gender">
+                                        <option value="" disabled selected>Seleccionar</option>
+                                        <option value="M">Masculino</option>
+                                        <option value="F">Femenino</option>
+                                        <option value="O">Otro</option>
+                                    </select>
+                                    <label for="gender">Sexo</label>
+                                    <div *ngIf="formUser.get('gender')?.invalid && formUser.get('gender')?.touched"
+                                    class="text-danger">
+                                    Es necesario este campo
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- Sección de Información de la Cuenta -->
+                        <h5 class="mb-3">Información de la Cuenta</h5>
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input type="email" class="form-control" placeholder="Correo Electrónico"
+                                        formControlName="email">
+                                    <label for="email">Correo Electrónico</label>
+                                    <div *ngIf="formUser.get('email')?.invalid && formUser.get('email')?.touched"
+                                    class="text-danger">
+                                    El correo es requerido
+                                    </div>
+                                </div>
+    
+                                <div class="form-floating mb-3">
+                                    <input type="date" class="form-control" placeholder="Fecha de Registro"
+                                        formControlName="creation_date" disabled>
+                                    <label for="creation_date">Fecha de Registro</label>
+                                </div>
+                            </div>
+    
+                            <div class="col-12 col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input [type]="showPassword ? 'text' : 'password'" class="form-control"
+                                        formControlName="password" placeholder="Ingrese su contraseña" />
+                                    <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"
+                                        (click)="togglePasswordVisibility()"
+                                        style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); cursor: pointer;"></i>
+                                    <label for="password">Contraseña</label>
+                                    <div *ngIf="formUser.get('password')?.invalid && formUser.get('password')?.touched"
+                                    class="text-danger">
+                                    La contraseña es requerida
+                                    </div>
+                                </div>
+    
+                                <div class="form-floating mb-3">
+                                    <select class="form-control" formControlName="usertype_id" required disabled>
+                                        <option value="" disabled selected>Seleccionar Tipo de Usuario</option>
+                                        <option *ngFor="let list of userTypesList" [value]="list.usertype_id">
+                                            {{ list.description }}
+                                        </option>
+                                    </select>
+                                    <label for="usertype_id">Tipo de Usuario</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" (click)="closeButton()">Cerrar</button>
+                        <button type="submit" class="btn btn-danger">Editar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    
+</div>
+
+<app-mainfooter></app-mainfooter>
